@@ -10,7 +10,6 @@ import java.util.Date;
 @Table(name = "BLPS_FLIGHT")
 public class Flight {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String airline;
@@ -18,6 +17,8 @@ public class Flight {
     private String placeFrom;
 
     private String placeTo;
+
+    private Double cost;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date DepartureTime;

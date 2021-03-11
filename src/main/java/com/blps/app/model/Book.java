@@ -3,6 +3,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -18,4 +19,13 @@ public class Book implements Serializable{
 
     @Enumerated(EnumType.ORDINAL)
     private BookStatus status;
+
+    @OneToMany(mappedBy = "book")
+    private List<Ticket> tickets;
+
+    @ManyToOne
+    private User creator;
+
+    @ManyToOne
+    private User boss;
 }

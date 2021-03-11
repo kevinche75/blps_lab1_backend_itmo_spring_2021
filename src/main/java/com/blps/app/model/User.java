@@ -1,13 +1,16 @@
 package com.blps.app.model;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
 @Table(name = "BLPS_USER")
+@JsonIgnoreProperties({"boss", "booksCreator", "booksBoss"}) //to avoid cycle
 public class User implements Serializable{
 
     @Id
@@ -29,4 +32,10 @@ public class User implements Serializable{
 
     @ManyToOne
     private Company company;
+
+    @OneToMany(mappedBy = "creator")
+    private List<Book> booksCreator;
+
+    @OneToMany(mappedBy = "boss")
+    private List<Book> booksBoss;
 }

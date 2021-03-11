@@ -1,16 +1,20 @@
 package com.blps.app.controller;
 
 import com.blps.app.model.Book;
+import com.blps.app.model.Flight;
 import com.blps.app.model.Ticket;
 import com.blps.app.service.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@RequestMapping("/api")
 @RestController
 public class ApiController {
 
@@ -23,38 +27,55 @@ public class ApiController {
     }
 
     @GetMapping("/")
-    public String testRequest(@RequestParam(name = "message") String message){
-        return "OK, you entered "+message;
+    public ResponseEntity<String> testRequest(@RequestParam(name = "message") String message){
+        return ResponseEntity.ok("OK, you entered "+  message);
     }
 
-    @GetMapping("/available_tickets")
-    public List<Ticket> getAvailableTickets(@RequestParam(name = "from") String from,
+    @GetMapping("/tickets")
+    public ResponseEntity<List<Flight>> getAvailableTickets(@RequestParam(name = "from") String from,
                                             @RequestParam(name = "to") String to,
                                             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                             @RequestParam(name = "date") Date date){
-        return new ArrayList<Ticket>();
+        return ResponseEntity.ok(searchService.getTickets(from, to, date));
     }
 
-    @GetMapping("approve_book/{id}")
-    public HttpStatus approveBook(@PathVariable(name = "id") Long bookId){
-        return HttpStatus.OK;
+    @PostMapping("approve/book")
+    public ResponseEntity<Book> approveBook(@RequestParam(name = "id") Long bookId){
+        Book book = bookService.approveBook(bookId);
+        if(book != null){
+            return ResponseEntity.ok(book);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     @GetMapping("book/{by}/{id}")
-    public List<Book> getBooks(@PathVariable(name = "by") String by,
-                               @PathVariable(name = "id") Long id){
+    public ResponseEntity<List<Book>> getBooks(@PathVariable(name = "by") String by,
+                               @PathVariable(name = "id") String login){
+        List<Book> books;
         switch (by){
             case "boss":
-                return new ArrayList<Book>();
+                books =  bookService.getBooksAsBoss(login);
+                if(books != null){
+                    return ResponseEntity.ok(books);
+                }
+                else return ResponseEntity.notFound().build();
             case "user":
-                return new ArrayList<Book>();
+                books =  bookService.getBooksAsPassenger(login);
+                if(books != null){
+                    return ResponseEntity.ok(books);
+                }
+                else return ResponseEntity.notFound().build();
         }
-        return null;
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
     
-    @PostMapping("book")
-    public HttpStatus createBook(@RequestParam(name = "flight_id") Long flight_id,
+    @PostMapping("add/book")
+    public ResponseEntity<Book> createBook(@RequestParam(name = "flight_id") Long flight_id,
                                  @RequestParam(name = "login") String login){
-        return HttpStatus.OK;
+        Book book = bookService.createBook(flight_id, login);
+        if(book!=null){
+            return ResponseEntity.ok(book);
+        }
+        return ResponseEntity.badRequest().body(null);
     }
 }
