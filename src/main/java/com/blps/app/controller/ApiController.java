@@ -1,11 +1,13 @@
 package com.blps.app.controller;
 
-import com.blps.app.model.Flight;
+import com.blps.app.model.Book;
+import com.blps.app.model.Ticket;
 import com.blps.app.service.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,9 +22,39 @@ public class ApiController {
         this.bookService = bookService;
     }
 
-
     @GetMapping("/")
-    public List<Flight> testRequest(@RequestParam(name = "message") String message){
-        return searchService.getTickets("LED", "DME", new Date(System.currentTimeMillis()));
+    public String testRequest(@RequestParam(name = "message") String message){
+        return "OK, you entered "+message;
+    }
+
+    @GetMapping("/available_tickets")
+    public List<Ticket> getAvailableTickets(@RequestParam(name = "from") String from,
+                                            @RequestParam(name = "to") String to,
+                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                            @RequestParam(name = "date") Date date){
+        return new ArrayList<Ticket>();
+    }
+
+    @GetMapping("approve_book/{id}")
+    public HttpStatus approveBook(@PathVariable(name = "id") Long bookId){
+        return HttpStatus.OK;
+    }
+
+    @GetMapping("book/{by}/{id}")
+    public List<Book> getBooks(@PathVariable(name = "by") String by,
+                               @PathVariable(name = "id") Long id){
+        switch (by){
+            case "boss":
+                return new ArrayList<Book>();
+            case "user":
+                return new ArrayList<Book>();
+        }
+        return null;
+    }
+    
+    @PostMapping("book")
+    public HttpStatus createBook(@RequestParam(name = "flight_id") Long flight_id,
+                                 @RequestParam(name = "login") String login){
+        return HttpStatus.OK;
     }
 }
