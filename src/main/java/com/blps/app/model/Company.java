@@ -9,9 +9,7 @@ import java.io.Serializable;
 public class Company implements Serializable{
 
     @Id
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "account")
     private Double account;
 }

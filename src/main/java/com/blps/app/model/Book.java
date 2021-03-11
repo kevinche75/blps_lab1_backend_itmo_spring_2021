@@ -11,14 +11,11 @@ public class Book implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "book_time")
     private Date BookTime;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "status")
     private BookStatus status;
 }

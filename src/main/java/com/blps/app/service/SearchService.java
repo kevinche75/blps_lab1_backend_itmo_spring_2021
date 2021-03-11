@@ -1,5 +1,6 @@
 package com.blps.app.service;
 
+import com.blps.app.model.Flight;
 import com.blps.app.model.Ticket;
 import com.blps.app.repository.TicketRepository;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class SearchService {
         this.airlineApiService = airlineApiService;
     }
 
-    public List<Ticket> getTickets(String from, String to, Date date){
+    public List<Flight> getTickets(String from, String to, Date date){
         return airlineApiService.findTickets(from, to, date);
     }
 }

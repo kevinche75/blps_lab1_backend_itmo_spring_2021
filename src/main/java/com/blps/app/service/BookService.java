@@ -29,8 +29,8 @@ public class BookService {
         this.searchService = searchService;
     }
 
-    public boolean createBook(Ticket ticket){
-        //TODO
+    public boolean createBook(Flight flight, User passenger){
+
         return true;
     }
 

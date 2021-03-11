@@ -1,9 +1,13 @@
 package com.blps.app.controller;
 
+import com.blps.app.model.Flight;
 import com.blps.app.service.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Date;
+import java.util.List;
 
 @RestController
 public class ApiController {
@@ -18,7 +22,7 @@ public class ApiController {
 
 
     @GetMapping("/")
-    public String testRequest(@RequestParam(name = "message") String message){
-        return "OK, you entered "+message;
+    public List<Flight> testRequest(@RequestParam(name = "message") String message){
+        return searchService.getTickets("LED", "DME", new Date(System.currentTimeMillis()));
     }
 }

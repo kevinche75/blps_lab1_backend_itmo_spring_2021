@@ -11,25 +11,19 @@ public class Ticket implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "airline")
-    private String airline;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "departure_time")
-    private Date DepartureTime;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "arrival_time")
-    private Date ArrivalTime;
+    private Long innerNumber;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "passenger_id")
+    private User passenger;
 
     @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
+
+    @OneToOne
+    @JoinColumn(name="flight_id")
+    private Flight flight;
 }
