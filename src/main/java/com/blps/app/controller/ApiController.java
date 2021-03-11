@@ -53,7 +53,8 @@ public class ApiController {
     }
     
     @PostMapping("book")
-    public HttpStatus createBook(@RequestParam(name = "ticket") Ticket ticket){
+    public HttpStatus createBook(@RequestParam(name = "flight_id") Long flight_id,
+                                 @RequestParam(name = "login") String login){
         return HttpStatus.OK;
     }
 }
