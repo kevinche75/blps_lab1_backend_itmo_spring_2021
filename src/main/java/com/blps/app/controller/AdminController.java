@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 @RequestMapping("/api/admin")
 @RestController
@@ -22,22 +23,29 @@ public class AdminController {
 
     @PutMapping("/company")
     public ResponseEntity<Company> createCompany(@RequestParam(name = "name") String name){
-        return ResponseEntity.ok(null);
+        Company company = companyService.createCompany(name);
+        if(company == null){
+            return ResponseEntity.badRequest().body(null);
+        }
+        return ResponseEntity.ok(company);
     }
 
-    @PostMapping("/company")
-    public ResponseEntity<Company> changeAccount(@RequestParam(name = "account") Double value){
-        return ResponseEntity.ok(null);
+    @PostMapping("/company/{name}")
+    public ResponseEntity<Company> changeAccount(@RequestParam(name = "account") Double value,
+                                                 @PathVariable(name = "name") String name){
+        Company company = companyService.updateCompanyAccount(name, value);
+        if(company == null){
+            return ResponseEntity.badRequest().body(null);
+        }
+        return ResponseEntity.ok(company);
     }
 
     @DeleteMapping("/company/{name}")
-    public ResponseEntity<Company> deleteCompany(@PathVariable("name") String name){
-        return ResponseEntity.ok(null);
-    }
-
-    @GetMapping("/company/{name}")
-    public ResponseEntity<Company> getCompany(@PathVariable("name") String name){
-        return ResponseEntity.ok(null);
+    public ResponseEntity<Boolean> deleteCompany(@PathVariable("name") String name){
+        if(companyService.deleteCompany(name)){
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.badRequest().body(false);
     }
 
     @PutMapping("/user")
@@ -46,12 +54,15 @@ public class AdminController {
                                            @RequestParam(name = "name") String name,
                                            @RequestParam(name = "surname") String surname,
                                            @RequestParam(name = "passport") String passport,
-                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                                                 @RequestParam(name = "date") Date birthDate,
+                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam(name = "date") Date birthDate,
                                            @RequestParam(name = "boss") String bossLogin,
                                            @RequestParam(name = "companyName") String companyName
                                                  ){
-        return ResponseEntity.ok(null);
+        User user = companyService.createUser(login, password, name, surname, passport, birthDate, bossLogin, companyName);
+        if(user != null){
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.badRequest().body(null);
     }
 
     @PostMapping("/user")
@@ -64,16 +75,27 @@ public class AdminController {
                                            @RequestParam(name = "date", required = false) Date birthDate,
                                            @RequestParam(name = "boss", required = false) String bossLogin
     ){
-        return ResponseEntity.ok(null);
+        User user = companyService.updateUser(login, password, name, surname, passport, birthDate, bossLogin);
+        if(user != null){
+            return ResponseEntity.ok(user);
+        }
+        return ResponseEntity.badRequest().body(null);
     }
 
     @DeleteMapping("/user/{login}")
-    public ResponseEntity<User> deleteUser(@PathVariable("login") String login){
-        return ResponseEntity.ok(null);
+    public ResponseEntity<Boolean> deleteUser(@PathVariable("login") String login){
+        if(companyService.deleteUser(login)){
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.badRequest().body(false);
     }
 
-    @GetMapping("/user/{company}")
-    public ResponseEntity<User> getUser(@PathVariable("company") String company){
-        return ResponseEntity.ok(null);
+    @GetMapping("/{company}/users")
+    public ResponseEntity<List<User>> getUsers(@PathVariable("company") String company){
+        List<User> users = companyService.getUsers(company);
+        if(users != null){
+            return ResponseEntity.ok(users);
+        }
+        return ResponseEntity.badRequest().body(null);
     }
 }

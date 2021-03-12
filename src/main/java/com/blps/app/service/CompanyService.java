@@ -7,6 +7,7 @@ import com.blps.app.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,10 +33,20 @@ public class CompanyService {
         return company;
     }
 
-    public boolean updateCompanyAccount(String name, double amount){
+    public Company updateCompanyAccount(String name, double amount){
         Optional<Company> companyOptional = companyRepository.findById(name);
         if(companyOptional.isPresent() && amount > 0){
-            companyOptional.get().setAccount(companyOptional.get().getAccount() + amount);
+            Company company = companyOptional.get();
+            company.setAccount(company.getAccount() + amount);
+            companyRepository.saveAndFlush(company);
+            return company;
+        }
+        return null;
+    }
+
+    public boolean deleteCompany(String name){
+        if(companyRepository.existsById(name)){
+            companyRepository.deleteById(name);
             return true;
         }
         return false;
@@ -43,12 +54,13 @@ public class CompanyService {
 
     public User createUser(String login, String password, String name,
                            String surname, String passport, Date birthDate,
-                           String bossLogin){
+                           String bossLogin, String companyName){
         if(userRepository.existsById(login)){
             return null;
         }
         Optional<User> bossOptional = userRepository.findById(bossLogin);
-        if(bossOptional.isPresent()){
+        Optional<Company> companyOptional = companyRepository.findById(companyName);
+        if(bossOptional.isPresent() && companyOptional.isPresent()){
             User user = new User();
             user.setLogin(login);
             user.setPassword(password);
@@ -57,6 +69,7 @@ public class CompanyService {
             user.setPassport(passport);
             user.setBirthday(birthDate);
             user.setBoss(bossOptional.get());
+            user.setCompany(companyOptional.get());
             userRepository.saveAndFlush(user);
             return user;
         }
@@ -90,5 +103,19 @@ public class CompanyService {
         }
         return null;
     }
+
+    public boolean deleteUser(String name){
+        if(userRepository.existsById(name)){
+            userRepository.deleteById(name);
+            return true;
+        }
+        return false;
+    }
+
+    public List<User> getUsers(String companyName){
+        Optional<Company> companyOptional = companyRepository.findById(companyName);
+        return companyOptional.map(Company::getUsers).orElse(null);
+    }
+
 
 }
