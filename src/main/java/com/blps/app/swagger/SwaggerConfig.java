@@ -28,7 +28,7 @@ public class SwaggerConfig {
     private ApiInfo metadata() {
         return new ApiInfoBuilder()
                 .title("Business Logic. 1st lab")
-                .description("A. Chaika, A. Changalidi")
+                .description("V.Gorash, D.Belyakov")
                 .version("1.0.0")//
                 .build();
     }

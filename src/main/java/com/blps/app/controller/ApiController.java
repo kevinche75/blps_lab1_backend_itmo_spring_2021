@@ -4,6 +4,8 @@ import com.blps.app.model.Book;
 import com.blps.app.model.Flight;
 import com.blps.app.model.Ticket;
 import com.blps.app.service.*;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,20 +28,17 @@ public class ApiController {
         this.bookService = bookService;
     }
 
-    @GetMapping("/api")
-    public ResponseEntity<String> testRequest(@RequestParam(name = "message") String message){
-        return ResponseEntity.ok("OK, you entered "+  message);
-    }
-
-    @GetMapping("/api/tickets")
-    public ResponseEntity<List<Flight>> getAvailableTickets(@RequestParam(name = "from") String from,
-                                            @RequestParam(name = "to") String to,
-                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                                            @RequestParam(name = "date") Date date){
+    @ApiOperation(value = "${ApiController.getAvailbleTickets}")
+    @GetMapping("/tickets")
+    public ResponseEntity<List<Flight>> getAvailableTickets(@ApiParam(name = "from") @RequestParam(name = "from") String from,
+                                                            @ApiParam(name = "to")@RequestParam(name = "to") String to,
+                                                            @ApiParam(name = "date")@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                            @RequestParam(name = "date") Date date){
         return ResponseEntity.ok(searchService.getTickets(from, to, date));
     }
 
-    @PostMapping("/api/approve/book")
+    @ApiOperation(value = "${ApiController.approveBook}")
+    @PostMapping("/approve/book")
     public ResponseEntity<Book> approveBook(@RequestParam(name = "id") Long bookId){
         Book book = bookService.approveBook(bookId);
         if(book != null){
@@ -48,7 +47,8 @@ public class ApiController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
-    @GetMapping("/api/book/{by}/{id}")
+    @ApiOperation(value = "${ApiController.getBooks}")
+    @GetMapping("/book/{by}/{id}")
     public ResponseEntity<List<Book>> getBooks(@PathVariable(name = "by") String by,
                                @PathVariable(name = "id") String login){
         List<Book> books;
@@ -68,8 +68,9 @@ public class ApiController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
-    
-    @PostMapping("/api/add/book")
+
+    @ApiOperation(value = "${ApiController.createBook}")
+    @PostMapping("/add/book")
     public ResponseEntity<Book> createBook(@RequestParam(name = "flight_id") Long flight_id,
                                  @RequestParam(name = "login") String login){
         Book book = bookService.createBook(flight_id, login);
