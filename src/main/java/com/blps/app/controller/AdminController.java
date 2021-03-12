@@ -72,8 +72,8 @@ public class AdminController {
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping("/user/{login}")
-    public ResponseEntity<User> getUser(@PathVariable("login") String login){
+    @GetMapping("/user/{company}")
+    public ResponseEntity<User> getUser(@PathVariable("company") String company){
         return ResponseEntity.ok(null);
     }
 }
