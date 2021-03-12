@@ -65,7 +65,7 @@ public class BookService {
 
     public Book approveBook(Long bookId){
         Optional<Book> bookOptional = bookRepository.findById(bookId);
-        if(bookOptional.isPresent()){
+        if(bookOptional.isPresent() && bookOptional.get().getStatus().equals(BookStatus.BOOKED)){
             Book book = bookOptional.get();
             double bookSum = 0;
             List<Ticket> tickets = book.getTickets();
