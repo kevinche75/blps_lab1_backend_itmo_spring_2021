@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 @RestController
 public class ApiController {
 
@@ -38,7 +38,7 @@ public class ApiController {
     }
 
     @ApiOperation(value = "${ApiController.approveBook}")
-    @PostMapping("/approve/book")
+    @PostMapping("/book/approve")
     public ResponseEntity<Book> approveBook(@RequestParam(name = "id") Long bookId){
         Book book = bookService.approveBook(bookId);
         if(book != null){
@@ -48,9 +48,9 @@ public class ApiController {
     }
 
     @ApiOperation(value = "${ApiController.getBooks}")
-    @GetMapping("/book/{by}/{id}")
+    @GetMapping("/{by}/{login}/book")
     public ResponseEntity<List<Book>> getBooks(@PathVariable(name = "by") String by,
-                               @PathVariable(name = "id") String login){
+                               @PathVariable(name = "login") String login){
         List<Book> books;
         switch (by){
             case "boss":
@@ -70,7 +70,7 @@ public class ApiController {
     }
 
     @ApiOperation(value = "${ApiController.createBook}")
-    @PostMapping("/add/book")
+    @PostMapping("/book/add")
     public ResponseEntity<Book> createBook(@RequestParam(name = "flight_id") Long flight_id,
                                  @RequestParam(name = "login") String login){
         Book book = bookService.createBook(flight_id, login);
