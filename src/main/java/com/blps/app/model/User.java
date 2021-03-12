@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "BLPS_USER")
-@JsonIgnoreProperties({"boss", "booksCreator", "booksBoss"}) //to avoid cycle
+@JsonIgnoreProperties({"boss", "booksCreator", "booksBoss", "password"}) //to avoid cycle
 public class User implements Serializable{
 
     @Id
