@@ -3,6 +3,7 @@ package com.blps.app.service;
 import com.blps.app.model.Flight;
 import com.blps.app.model.Ticket;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 

@@ -2,7 +2,6 @@ package com.blps.app.controller;
 
 import com.blps.app.model.Book;
 import com.blps.app.model.Flight;
-import com.blps.app.model.Ticket;
 import com.blps.app.service.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -10,20 +9,18 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@RequestMapping("/api/user")
+@RequestMapping("/api/")
 @RestController
 public class ApiController {
 
-    private final SearchService searchService;
+    private final AirlineApiService searchService;
     private final BookService bookService;
 
-    public ApiController(SearchService searchService, BookService bookService){
+    public ApiController(AirlineApiService searchService, BookService bookService){
         this.searchService = searchService;
         this.bookService = bookService;
     }
@@ -34,7 +31,7 @@ public class ApiController {
                                                             @ApiParam(name = "to")@RequestParam(name = "to") String to,
                                                             @ApiParam(name = "date")@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                                             @RequestParam(name = "date") Date date){
-        return ResponseEntity.ok(searchService.getTickets(from, to, date));
+        return ResponseEntity.ok(searchService.findTickets(from, to, date));
     }
 
     @ApiOperation(value = "${ApiController.approveBook}")

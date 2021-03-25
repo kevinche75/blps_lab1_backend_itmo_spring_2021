@@ -100,6 +100,8 @@ public class CompanyService {
             if(bossLogin != null && userRepository.existsById(bossLogin)){
                 user.setBoss(userRepository.getOne(bossLogin));
             }
+            userRepository.saveAndFlush(user);
+            return user;
         }
         return null;
     }

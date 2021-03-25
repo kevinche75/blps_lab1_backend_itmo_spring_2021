@@ -18,20 +18,17 @@ public class BookService {
     private final FlightRepository flightRepository;
 
     private final AirlineApiService airlineApiService;
-    private final SearchService searchService;
 
     public BookService(BookRepository bookRepository,
                        TicketRepository ticketRepository,
                        UserRepository userRepository,
                        FlightRepository flightRepository,
-                       AirlineApiService airlineApiService,
-                       SearchService searchService){
+                       AirlineApiService airlineApiService){
         this.bookRepository = bookRepository;
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.flightRepository = flightRepository;
         this.airlineApiService = airlineApiService;
-        this.searchService = searchService;
     }
 
     public Book createBook(Long flightId, String login){
