@@ -38,4 +38,7 @@ public class User implements Serializable{
 
     @OneToMany(mappedBy = "boss")
     private List<Book> booksBoss;
+
+    @Transient
+    private Collection<Role> roles;
 }
