@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "BLPS_USER")
-@JsonIgnoreProperties({"boss", "booksCreator", "booksBoss", "password"}) //to avoid cycle
+@JsonIgnoreProperties({"boss", "booksCreator", "booksBoss", "password", "subordinates"}) //to avoid cycle
 public class User implements Serializable{
 
     @Id
@@ -23,6 +23,8 @@ public class User implements Serializable{
     private String surname;
 
     private String passport;
+
+    private boolean admin;
     
     @Temporal(TemporalType.DATE)
     private Date birthday;
@@ -39,6 +41,6 @@ public class User implements Serializable{
     @OneToMany(mappedBy = "boss")
     private List<Book> booksBoss;
 
-    @Transient
-    private Collection<Role> roles;
+    @OneToMany(mappedBy = "boss")
+    private List<User> subordinates;
 }
