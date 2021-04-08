@@ -1,4 +1,4 @@
-package com.blps.app.config;
+package com.blps.app.secure;
 
 import org.springframework.security.core.GrantedAuthority;
 

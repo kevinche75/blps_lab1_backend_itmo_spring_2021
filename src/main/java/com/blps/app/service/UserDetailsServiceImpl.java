@@ -1,6 +1,6 @@
 package com.blps.app.service;
 
-import com.blps.app.config.UserDetailsImpl;
+import com.blps.app.secure.UserDetailsImpl;
 import com.blps.app.model.User;
 import com.blps.app.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
