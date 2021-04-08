@@ -1,12 +1,14 @@
-package com.blps.app.utils;
+package com.blps.app.config;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
+@Component
 public class JWTUtils {
 
     private static final String AUTHORIZATION = "Authorization";

@@ -1,50 +1,44 @@
 package com.blps.app.config;
 
-import com.blps.app.service.CustomUserDetailsService;
-import com.blps.app.utils.JWTUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.blps.app.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
-public class JWTAuthFilter implements Filter {
+public class JWTAuthFilter extends OncePerRequestFilter {
 
     @Value("$(jwt.header)")
     private String JWTHeader;
 
-    @Autowired
-    private JWTUtils JWTUtils;
+    private final JWTUtils JWTUtils;
+    private final UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
-    CustomUserDetailsService userDetailsService;
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        Filter.super.init(filterConfig);
+    public JWTAuthFilter(JWTUtils utils, UserDetailsServiceImpl userDetailsService){
+        this.JWTUtils = utils;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilterInternal(HttpServletRequest servletRequest, HttpServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
-        String token = ((HttpServletRequest) servletRequest).getHeader(JWTHeader);
+        String token = servletRequest.getHeader(JWTHeader);
         if(token != null && JWTUtils.validateToken(token)){
-            String email = JWTUtils.getLoginFromToken(token);
+            String login = JWTUtils.getLoginFromToken(token);
             try{
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(login);
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, null);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }catch (Exception e){
-                ((HttpServletResponse)servletResponse).setStatus(401);
-                ((HttpServletResponse)servletResponse).sendError(401, "Authorization failed. Invalid token");
+                servletResponse.setStatus(401);
+                servletResponse.sendError(401, "Authorization failed. Invalid token");
             }
         }
         filterChain.doFilter(servletRequest, servletResponse);
