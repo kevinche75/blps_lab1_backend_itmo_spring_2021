@@ -4,6 +4,7 @@ import com.blps.app.model.Company;
 import com.blps.app.model.User;
 import com.blps.app.repository.CompanyRepository;
 import com.blps.app.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -15,10 +16,12 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bcryptEncoder;
 
-    public CompanyService(CompanyRepository companyRepository, UserRepository userRepository) {
+    public CompanyService(CompanyRepository companyRepository, UserRepository userRepository, BCryptPasswordEncoder bcryptEncoder) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
+        this.bcryptEncoder = bcryptEncoder;
     }
 
     public Company createCompany(String name){
@@ -63,7 +66,7 @@ public class CompanyService {
         if(bossOptional.isPresent() && companyOptional.isPresent()){
             User user = new User();
             user.setLogin(login);
-            user.setPassword(password);
+            user.setPassword(bcryptEncoder.encode(password));
             user.setName(name);
             user.setSurname(surname);
             user.setPassport(passport);
