@@ -2,60 +2,42 @@ package com.blps.app.service;
 
 import com.blps.app.model.Flight;
 import com.blps.app.model.Ticket;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
 public class AirlineApiService {
 
-    //Stub methods emulating airline API (find tickets, book tickets, buy tickets)
-    private static List<String> airlinesNames = new ArrayList<>();
-
-    static {
-        airlinesNames.add("Aeroflot");
-        airlinesNames.add("S7");
-        airlinesNames.add("Pobeda");
-        airlinesNames.add("UTair");
-        airlinesNames.add("Rossia");
-    }
+    @Value("${app.airline.url}")
+    private String airlineUrl;
 
     public Long bookTicket(Flight flight){
-        //TODO
-        return Math.round(Math.random() * 100000);
+        return new RestTemplate().postForObject(airlineUrl+"flight/{id}", "", Long.class, flight.getId());
     }
 
     public boolean buyTicket(Ticket ticket){
-        //TODO
-        return true;
+        Boolean status = new RestTemplate().postForObject(airlineUrl+"ticket/{id}", "", Boolean.class, ticket.getId());
+        if(status != null){
+            return status;
+        }
+        return false;
     }
 
     public Flight checkFlight(Long id){
-        Flight flight = new Flight();
-        flight.setAirline("Aeroflot");
-        flight.setId(id);
-        flight.setPlaceFrom("LED");
-        flight.setPlaceTo("DME");
-        flight.setCost(1000.0);
-        flight.setDepartureTime(new Date(System.currentTimeMillis()));
-        return flight;
+        return new RestTemplate().getForObject(airlineUrl+"flight/{id}", Flight.class, id);
     }
 
     public List<Flight> findTickets(String from, String to, Date date){
-        List<Flight> result = new ArrayList<>();
-        long numFlights = 20;
-        for(int i=0; i<numFlights; i++){
-            Flight flight = new Flight();
-            flight.setAirline(airlinesNames.get(i % airlinesNames.size()));
-            flight.setPlaceFrom(from);
-            flight.setPlaceTo(to);
-            flight.setDepartureTime(date);
-            flight.setId(i);
-            flight.setCost(1000.0);
-            result.add(flight);
+        Flight[] flights = new RestTemplate()
+                .getForEntity(airlineUrl+"flights?from={from}&to={to}&date={date}", Flight[].class, from, to, new SimpleDateFormat("yyyy-MM-dd").format(date)).getBody();
+        if(flights==null){
+            return null;
         }
-        return result;
+        return new ArrayList<>(Arrays.asList(flights));
     }
 
 }

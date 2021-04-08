@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "app.airline.url",
+      "type": "java.lang.String",
+      "description": "Description for app.airline.url."
+  }
+] }
