@@ -79,6 +79,11 @@ public class CompanyService {
         return null;
     }
 
+    public User getUser(String login){
+        Optional<User> user = userRepository.findById(login);
+        return user.orElse(null);
+    }
+
     public User updateUser(String login, String password, String name,
                            String surname, String passport, Date birthDate,
                            String bossLogin){

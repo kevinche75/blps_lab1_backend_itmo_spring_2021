@@ -2,7 +2,6 @@ package com.blps.app.controller;
 
 import com.blps.app.model.User;
 import com.blps.app.secure.JWTUtils;
-import com.blps.app.service.AuthService;
 import com.blps.app.service.CompanyService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,13 +24,11 @@ public class AuthController {
     private String JWTHeader;
 
     private final AuthenticationManager authenticationManager;
-    private final AuthService authService;
     private final JWTUtils JWTUtils;
     private final CompanyService companyService;
 
-    public AuthController(AuthenticationManager authenticationManager, AuthService authService, JWTUtils JWTUtils, CompanyService companyService) {
+    public AuthController(AuthenticationManager authenticationManager, JWTUtils JWTUtils, CompanyService companyService) {
         this.authenticationManager = authenticationManager;
-        this.authService = authService;
         this.JWTUtils = JWTUtils;
         this.companyService = companyService;
     }
@@ -53,7 +50,7 @@ public class AuthController {
         String jwtToken = JWTUtils.generateToken(login);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(JWTHeader, jwtToken);
-        User user = authService.getUser(login);
+        User user = companyService.getUser(login);
         if (user == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
