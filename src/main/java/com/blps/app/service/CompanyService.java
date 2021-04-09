@@ -4,7 +4,7 @@ import com.blps.app.model.Company;
 import com.blps.app.model.User;
 import com.blps.app.repository.CompanyRepository;
 import com.blps.app.repository.UserRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -16,9 +16,9 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bcryptEncoder;
+    private final PasswordEncoder bcryptEncoder;
 
-    public CompanyService(CompanyRepository companyRepository, UserRepository userRepository, BCryptPasswordEncoder bcryptEncoder) {
+    public CompanyService(CompanyRepository companyRepository, UserRepository userRepository, PasswordEncoder bcryptEncoder) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.bcryptEncoder = bcryptEncoder;

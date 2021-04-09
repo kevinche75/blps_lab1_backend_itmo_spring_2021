@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -25,6 +26,7 @@ public class ApiController {
         this.bookService = bookService;
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @ApiOperation(value = "${ApiController.getAvailbleTickets}")
     @GetMapping("/tickets")
     public ResponseEntity<List<Flight>> getAvailableTickets(@ApiParam(name = "from") @RequestParam(name = "from") String from,
@@ -34,6 +36,7 @@ public class ApiController {
         return ResponseEntity.ok(searchService.findTickets(from, to, date));
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @ApiOperation(value = "${ApiController.approveBook}")
     @PostMapping("/book/approve")
     public ResponseEntity<Book> approveBook(@RequestParam(name = "id") Long bookId){
@@ -44,6 +47,7 @@ public class ApiController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @ApiOperation(value = "${ApiController.getBooks}")
     @GetMapping("/{by}/{login}/book")
     public ResponseEntity<List<Book>> getBooks(@PathVariable(name = "by") String by,
@@ -66,6 +70,8 @@ public class ApiController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
+
+    @PreAuthorize("hasRole('ROLE_USER')")
     @ApiOperation(value = "${ApiController.createBook}")
     @PostMapping("/book/add")
     public ResponseEntity<Book> createBook(@RequestParam(name = "flight_id") Long flight_id,
