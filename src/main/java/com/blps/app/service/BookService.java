@@ -3,6 +3,7 @@ package com.blps.app.service;
 import com.blps.app.model.*;
 import com.blps.app.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +32,7 @@ public class BookService {
         this.airlineApiService = airlineApiService;
     }
 
+    @Transactional
     public Book createBook(Long flightId, String login){
         Optional<User> passenger = userRepository.findById(login);
         Flight flight = airlineApiService.checkFlight(flightId);
@@ -60,6 +62,7 @@ public class BookService {
         return null;
     }
 
+    @Transactional
     public Book approveBook(Long bookId, String managerId){
         Optional<Book> bookOptional = bookRepository.findById(bookId);
         Optional<User> manager = userRepository.findById(managerId);
