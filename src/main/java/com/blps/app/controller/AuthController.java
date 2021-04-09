@@ -58,7 +58,7 @@ public class AuthController {
     }
 
     @PutMapping("/user")
-    public ResponseEntity<User> createUser(@RequestParam(name = "login") String login,
+    public ResponseEntity<User> register(@RequestParam(name = "login") String login,
                                            @RequestParam(name = "password") String password,
                                            @RequestParam(name = "name") String name,
                                            @RequestParam(name = "surname") String surname,
