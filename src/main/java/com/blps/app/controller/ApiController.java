@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -26,7 +27,7 @@ public class ApiController {
         this.bookService = bookService;
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @ApiOperation(value = "${ApiController.getAvailbleTickets}")
     @GetMapping("/tickets")
     public ResponseEntity<List<Flight>> getAvailableTickets(@ApiParam(name = "from") @RequestParam(name = "from") String from,
@@ -36,23 +37,24 @@ public class ApiController {
         return ResponseEntity.ok(searchService.findTickets(from, to, date));
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('MANAGER')")
     @ApiOperation(value = "${ApiController.approveBook}")
     @PostMapping("/book/approve")
     public ResponseEntity<Book> approveBook(@RequestParam(name = "id") Long bookId){
-        Book book = bookService.approveBook(bookId);
+        String managerId = SecurityContextHolder.getContext().getAuthentication().getName();
+        Book book = bookService.approveBook(bookId, managerId);
         if(book != null){
             return ResponseEntity.ok(book);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER')")
     @ApiOperation(value = "${ApiController.getBooks}")
-    @GetMapping("/{by}/{login}/book")
-    public ResponseEntity<List<Book>> getBooks(@PathVariable(name = "by") String by,
-                               @PathVariable(name = "login") String login){
+    @GetMapping("/{by}/book")
+    public ResponseEntity<List<Book>> getBooks(@PathVariable(name = "by") String by){
         List<Book> books;
+        String login = SecurityContextHolder.getContext().getAuthentication().getName();
         switch (by){
             case "boss":
                 books =  bookService.getBooksAsBoss(login);
@@ -74,8 +76,8 @@ public class ApiController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @ApiOperation(value = "${ApiController.createBook}")
     @PostMapping("/book/add")
-    public ResponseEntity<Book> createBook(@RequestParam(name = "flight_id") Long flight_id,
-                                 @RequestParam(name = "login") String login){
+    public ResponseEntity<Book> createBook(@RequestParam(name = "flight_id") Long flight_id){
+        String login = SecurityContextHolder.getContext().getAuthentication().getName();
         Book book = bookService.createBook(flight_id, login);
         if(book!=null){
             return ResponseEntity.ok(book);

@@ -60,12 +60,12 @@ public class BookService {
         return null;
     }
 
-    public Book approveBook(Long bookId){
+    public Book approveBook(Long bookId, String managerId){
         Optional<Book> bookOptional = bookRepository.findById(bookId);
-        if(bookOptional.isPresent() && bookOptional.get().getStatus().equals(BookStatus.BOOKED)){
+        Optional<User> manager = userRepository.findById(managerId);
+        if(bookOptional.isPresent() && bookOptional.get().getStatus().equals(BookStatus.BOOKED) && manager.isPresent() && manager.get().equals(bookOptional.get().getBoss())){
             Book book = bookOptional.get();
             double bookSum = 0;
-            List<Ticket> tickets = book.getTickets();
             for(Ticket t : book.getTickets()){
                 bookSum+=t.getFlight().getCost();
             }

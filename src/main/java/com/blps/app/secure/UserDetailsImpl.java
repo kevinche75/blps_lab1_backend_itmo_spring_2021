@@ -13,18 +13,22 @@ public class UserDetailsImpl implements UserDetails {
     private final String username;
     private final String password;
 
-    public UserDetailsImpl(User user){
+    public UserDetailsImpl(User user, int numSubordinates){
         this.username = user.getLogin();
         this.password = user.getPassword();
         this.roles = new ArrayList<>();
         if(user.getCompany() != null){
             roles.add(Role.ROLE_USER);
         }
-        if(user.getSubordinates().size()>0){
+        if(numSubordinates>0){
             roles.add(Role.ROLE_MANAGER);
         }
-        if(user.isAdmin()){
-            roles.add(Role.ROLE_ADMIN);
+        if(user.isAdmin() && user.getCompany() == null){
+            roles.add(Role.ROLE_ADMIN_GLOBAL);
+            roles.add(Role.ROLE_ADMIN_COMPANY);
+        }
+        if(user.isAdmin() && user.getCompany() != null){
+            roles.add(Role.ROLE_ADMIN_COMPANY);
         }
     }
 

@@ -57,13 +57,15 @@ public class CompanyService {
 
     public User createUser(String login, String password, String name,
                            String surname, String passport, Date birthDate,
-                           String bossLogin, String companyName){
+                           String bossLogin, String companyName, String creatorId){
         if(userRepository.existsById(login)){
             return null;
         }
+        Optional<User> creator = userRepository.findById(creatorId);
         Optional<User> bossOptional = userRepository.findById(bossLogin);
         Optional<Company> companyOptional = companyRepository.findById(companyName);
-        if(bossOptional.isPresent() && companyOptional.isPresent()){
+
+        if(bossOptional.isPresent() && companyOptional.isPresent() && creator.isPresent()){
             User user = new User();
             user.setLogin(login);
             user.setPassword(bcryptEncoder.encode(password));
@@ -72,7 +74,7 @@ public class CompanyService {
             user.setPassport(passport);
             user.setBirthday(birthDate);
             user.setBoss(bossOptional.get());
-            user.setCompany(companyOptional.get());
+            user.setCompany(creator.get().getCompany() == null ? companyOptional.get() : creator.get().getCompany());
             userRepository.saveAndFlush(user);
             return user;
         }
@@ -86,12 +88,13 @@ public class CompanyService {
 
     public User updateUser(String login, String password, String name,
                            String surname, String passport, Date birthDate,
-                           String bossLogin){
+                           String bossLogin, String creatorId){
         Optional<User> userOptional = userRepository.findById(login);
-        if(userOptional.isPresent()){
+        Optional<User> creator = userRepository.findById(creatorId);
+        if(userOptional.isPresent() && creator.isPresent() && (creator.get().getCompany() == null || creator.get().getCompany().equals(userOptional.get().getCompany()))){
             User user = userOptional.get();
             if(password != null){
-                user.setPassword(password);
+                user.setPassword(bcryptEncoder.encode(password));
             }
             if(name != null){
                 user.setName(name);
@@ -114,16 +117,22 @@ public class CompanyService {
         return null;
     }
 
-    public boolean deleteUser(String name){
-        if(userRepository.existsById(name)){
+    public boolean deleteUser(String name, String creatorId){
+        Optional<User> creator = userRepository.findById(creatorId);
+        Optional<User> user = userRepository.findById(name);
+        if(user.isPresent() && creator.isPresent() && (creator.get().getCompany()==null || creator.get().getCompany().equals(user.get().getCompany()))){
             userRepository.deleteById(name);
             return true;
         }
         return false;
     }
 
-    public List<User> getUsers(String companyName){
+    public List<User> getUsers(String companyName, String creatorId){
+        Optional<User> creator = userRepository.findById(creatorId);
         Optional<Company> companyOptional = companyRepository.findById(companyName);
+        if(!creator.isPresent() || (creator.get().getCompany() != null && !creator.get().getCompany().getName().equals(companyName))){
+            return null;
+        }
         return companyOptional.map(Company::getUsers).orElse(null);
     }
 

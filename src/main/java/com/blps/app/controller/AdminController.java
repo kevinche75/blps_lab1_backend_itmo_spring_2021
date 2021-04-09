@@ -7,12 +7,12 @@ import com.blps.app.service.CompanyService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
 
-@PreAuthorize("hasRole('ROLE_ADMIN')")
 @RequestMapping("/api/admin")
 @RestController
 public class AdminController {
@@ -23,6 +23,7 @@ public class AdminController {
         this.companyService = companyService;
     }
 
+    @PreAuthorize("hasRole('ADMIN_GLOBAL')")
     @PutMapping("/company")
     public ResponseEntity<Company> createCompany(@RequestParam(name = "name") String name){
         Company company = companyService.createCompany(name);
@@ -32,6 +33,7 @@ public class AdminController {
         return ResponseEntity.ok(company);
     }
 
+    @PreAuthorize("hasRole('ADMIN_GLOBAL')")
     @PostMapping("/company/{name}")
     public ResponseEntity<Company> changeAccount(@RequestParam(name = "account") Double value,
                                                  @PathVariable(name = "name") String name){
@@ -42,6 +44,7 @@ public class AdminController {
         return ResponseEntity.ok(company);
     }
 
+    @PreAuthorize("hasRole('ADMIN_GLOBAL')")
     @DeleteMapping("/company/{name}")
     public ResponseEntity<Boolean> deleteCompany(@PathVariable("name") String name){
         if(companyService.deleteCompany(name)){
@@ -50,6 +53,7 @@ public class AdminController {
         return ResponseEntity.badRequest().body(false);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN_GLOBAL', 'ADMIN_COMPANY')")
     @PutMapping("/user")
     public ResponseEntity<User> createUser(@RequestParam(name = "login") String login,
                                            @RequestParam(name = "password") String password,
@@ -60,13 +64,15 @@ public class AdminController {
                                            @RequestParam(name = "boss") String bossLogin,
                                            @RequestParam(name = "companyName") String companyName
                                                  ){
-        User user = companyService.createUser(login, password, name, surname, passport, birthDate, bossLogin, companyName);
+        String creatorId = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = companyService.createUser(login, password, name, surname, passport, birthDate, bossLogin, companyName, creatorId);
         if(user != null){
             return ResponseEntity.ok(user);
         }
         return ResponseEntity.badRequest().body(null);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN_GLOBAL', 'ADMIN_COMPANY')")
     @PostMapping("/user")
     public ResponseEntity<User> changeUser(@RequestParam(name = "login") String login,
                                            @RequestParam(name = "password", required = false) String password,
@@ -77,24 +83,29 @@ public class AdminController {
                                            @RequestParam(name = "date", required = false) Date birthDate,
                                            @RequestParam(name = "boss", required = false) String bossLogin
     ){
-        User user = companyService.updateUser(login, password, name, surname, passport, birthDate, bossLogin);
+        String creatorId = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = companyService.updateUser(login, password, name, surname, passport, birthDate, bossLogin, creatorId);
         if(user != null){
             return ResponseEntity.ok(user);
         }
         return ResponseEntity.badRequest().body(null);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN_GLOBAL', 'ADMIN_COMPANY')")
     @DeleteMapping("/user/{login}")
     public ResponseEntity<Boolean> deleteUser(@PathVariable("login") String login){
-        if(companyService.deleteUser(login)){
+        String creatorId = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(companyService.deleteUser(login, creatorId)){
             return ResponseEntity.ok(true);
         }
         return ResponseEntity.badRequest().body(false);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN_GLOBAL', 'ADMIN_COMPANY')")
     @GetMapping("/{company}/users")
     public ResponseEntity<List<User>> getUsers(@PathVariable("company") String company){
-        List<User> users = companyService.getUsers(company);
+        String creatorId = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<User> users = companyService.getUsers(company, creatorId);
         if(users != null){
             return ResponseEntity.ok(users);
         }

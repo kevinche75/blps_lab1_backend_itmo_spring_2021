@@ -20,7 +20,7 @@ import java.util.Date;
 @RestController
 public class AuthController {
 
-    @Value("$(jwt.header)")
+    @Value("${jwt.header}")
     private String JWTHeader;
 
     private final AuthenticationManager authenticationManager;
@@ -55,22 +55,5 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         return ResponseEntity.ok().headers(responseHeaders).body(user);
-    }
-
-    @PutMapping("/user")
-    public ResponseEntity<User> register(@RequestParam(name = "login") String login,
-                                           @RequestParam(name = "password") String password,
-                                           @RequestParam(name = "name") String name,
-                                           @RequestParam(name = "surname") String surname,
-                                           @RequestParam(name = "passport") String passport,
-                                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam(name = "date") Date birthDate,
-                                           @RequestParam(name = "boss") String bossLogin,
-                                           @RequestParam(name = "companyName") String companyName
-    ){
-        User user = companyService.createUser(login, password, name, surname, passport, birthDate, bossLogin, companyName);
-        if(user != null){
-            return ResponseEntity.ok(user);
-        }
-        return ResponseEntity.badRequest().body(null);
     }
 }

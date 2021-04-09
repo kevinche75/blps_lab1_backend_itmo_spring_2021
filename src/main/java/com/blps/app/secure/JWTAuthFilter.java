@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class JWTAuthFilter extends OncePerRequestFilter {
 
-    @Value("$(jwt.header)")
+    @Value("${jwt.header}")
     private String JWTHeader;
 
     private final JWTUtils JWTUtils;
@@ -33,7 +33,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             String login = JWTUtils.getLoginFromToken(token);
             try{
                 UserDetails userDetails = userDetailsService.loadUserByUsername(login);
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, null);
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }catch (Exception e){
                 servletResponse.setStatus(401);

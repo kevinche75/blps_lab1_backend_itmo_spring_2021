@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "BLPS_USER")
-@JsonIgnoreProperties({"boss", "booksCreator", "booksBoss", "password", "subordinates", "admin"}) //to avoid cycle
+@JsonIgnoreProperties({"boss", "booksCreator", "booksBoss", "password", "admin"}) //to avoid cycle
 public class User implements Serializable{
 
     @Id
@@ -41,7 +41,4 @@ public class User implements Serializable{
 
     @OneToMany(mappedBy = "boss")
     private List<Book> booksBoss;
-
-    @OneToMany(mappedBy = "boss")
-    private List<User> subordinates;
 }

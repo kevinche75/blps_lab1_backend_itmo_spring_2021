@@ -13,7 +13,7 @@ public class JWTUtils {
 
     private static final String AUTHORIZATION = "Authorization";
 
-    @Value("$(jwt.secret)")
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
     public String generateToken(String login){
