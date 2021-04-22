@@ -1,16 +1,17 @@
 package com.blps.app.service;
 
 import com.blps.app.model.Company;
-import com.blps.app.model.Role;
 import com.blps.app.model.User;
 import com.blps.app.repository.CompanyRepository;
 import com.blps.app.repository.UserRepository;
+import com.blps.app.securty.Role;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class CompanyService {
@@ -58,7 +59,7 @@ public class CompanyService {
 
     public User createUser(String login, String password, String name,
                            String surname, String passport, Date birthDate,
-                           String bossLogin, String companyName, String creatorId, List<Role> roles){
+                           String bossLogin, String companyName, String creatorId, Set<Role> roles){
         if(userRepository.existsById(login)){
             return null;
         }
@@ -90,7 +91,7 @@ public class CompanyService {
 
     public User updateUser(String login, String password, String name,
                            String surname, String passport, Date birthDate,
-                           String bossLogin, String creatorId, List<Role> roles){
+                           String bossLogin, String creatorId, Set<Role> roles){
         Optional<User> userOptional = userRepository.findById(login);
         Optional<User> creator = userRepository.findById(creatorId);
         if(userOptional.isPresent() && creator.isPresent() && (creator.get().getCompany() == null || creator.get().getCompany().equals(userOptional.get().getCompany()))){

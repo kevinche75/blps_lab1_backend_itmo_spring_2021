@@ -1,10 +1,9 @@
 package com.blps.app.controller;
 
 import com.blps.app.model.User;
-import com.blps.app.secure.JWTUtils;
+import com.blps.app.securty.JWTUtils;
 import com.blps.app.service.CompanyService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
 
 @RequestMapping("/api/auth/")
 @RestController

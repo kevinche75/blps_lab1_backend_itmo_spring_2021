@@ -1,6 +1,5 @@
-package com.blps.app.secure;
+package com.blps.app.securty;
 
-import com.blps.app.model.Role;
 import com.blps.app.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,9 +17,7 @@ public class UserDetailsImpl implements UserDetails {
         this.username = user.getLogin();
         this.password = user.getPassword();
         this.roles = new ArrayList<>();
-        for(Role role : user.getRoles()){
-            roles.add(role.getName());
-        }
+        roles.addAll(user.getRoles());
     }
 
     @Override

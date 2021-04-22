@@ -1,4 +1,4 @@
-package com.blps.app.secure;
+package com.blps.app.securty;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;

@@ -2,9 +2,8 @@ package com.blps.app.controller;
 
 
 import com.blps.app.model.Company;
-import com.blps.app.model.Role;
 import com.blps.app.model.User;
-import com.blps.app.secure.RoleEnum;
+import com.blps.app.securty.Role;
 import com.blps.app.service.CompanyService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RequestMapping("/api/admin")
 @RestController
@@ -68,8 +65,8 @@ public class AdminController {
                                            @RequestParam(name = "companyName") String companyName
                                                  ){
         String creatorId = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<Role> roles = new ArrayList<>();
-        roles.add(new Role(RoleEnum.ROLE_USER));
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.ROLE_USER);
         User user = companyService.createUser(login, password, name, surname, passport, birthDate, bossLogin, companyName, creatorId, roles);
         if(user != null){
             return ResponseEntity.ok(user);
@@ -89,8 +86,8 @@ public class AdminController {
                                            @RequestParam(name = "boss", required = false) String bossLogin
     ){
         String creatorId = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<Role> roles = new ArrayList<>();
-        roles.add(new Role(RoleEnum.ROLE_USER));
+        Set<Role> roles = new HashSet<>();
+        roles.add(Role.ROLE_USER);
         User user = companyService.updateUser(login, password, name, surname, passport, birthDate, bossLogin, creatorId, roles);
         if(user != null){
             return ResponseEntity.ok(user);

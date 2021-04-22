@@ -1,4 +1,4 @@
-package com.blps.app.secure;
+package com.blps.app.securty;
 
 import com.blps.app.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Value;

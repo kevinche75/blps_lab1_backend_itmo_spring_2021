@@ -1,4 +1,4 @@
-package com.blps.app.secure;
+package com.blps.app.securty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

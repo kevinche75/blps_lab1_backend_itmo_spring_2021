@@ -1,4 +1,5 @@
 package com.blps.app.model;
+import com.blps.app.securty.Role;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -37,7 +38,9 @@ public class User implements Serializable{
     @OneToMany(mappedBy = "creator")
     private List<Book> booksCreator;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "blps_role")
+    @Enumerated(EnumType.STRING)
     Set<Role> roles;
 
     @OneToMany(mappedBy = "boss")
