@@ -1,5 +1,6 @@
 package com.blps.app.secure;
 
+import com.blps.app.model.Role;
 import com.blps.app.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,22 +14,12 @@ public class UserDetailsImpl implements UserDetails {
     private final String username;
     private final String password;
 
-    public UserDetailsImpl(User user, int numSubordinates){
+    public UserDetailsImpl(User user){
         this.username = user.getLogin();
         this.password = user.getPassword();
         this.roles = new ArrayList<>();
-        if(user.getCompany() != null){
-            roles.add(Role.ROLE_USER);
-        }
-        if(numSubordinates>0){
-            roles.add(Role.ROLE_MANAGER);
-        }
-        if(user.isAdmin() && user.getCompany() == null){
-            roles.add(Role.ROLE_ADMIN_GLOBAL);
-            roles.add(Role.ROLE_ADMIN_COMPANY);
-        }
-        if(user.isAdmin() && user.getCompany() != null){
-            roles.add(Role.ROLE_ADMIN_COMPANY);
+        for(Role role : user.getRoles()){
+            roles.add(role.getName());
         }
     }
 

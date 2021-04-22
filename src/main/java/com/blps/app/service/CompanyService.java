@@ -1,6 +1,7 @@
 package com.blps.app.service;
 
 import com.blps.app.model.Company;
+import com.blps.app.model.Role;
 import com.blps.app.model.User;
 import com.blps.app.repository.CompanyRepository;
 import com.blps.app.repository.UserRepository;
@@ -57,7 +58,7 @@ public class CompanyService {
 
     public User createUser(String login, String password, String name,
                            String surname, String passport, Date birthDate,
-                           String bossLogin, String companyName, String creatorId){
+                           String bossLogin, String companyName, String creatorId, List<Role> roles){
         if(userRepository.existsById(login)){
             return null;
         }
@@ -75,6 +76,7 @@ public class CompanyService {
             user.setBirthday(birthDate);
             user.setBoss(bossOptional.get());
             user.setCompany(creator.get().getCompany() == null ? companyOptional.get() : creator.get().getCompany());
+            user.setRoles(roles);
             userRepository.saveAndFlush(user);
             return user;
         }
@@ -88,7 +90,7 @@ public class CompanyService {
 
     public User updateUser(String login, String password, String name,
                            String surname, String passport, Date birthDate,
-                           String bossLogin, String creatorId){
+                           String bossLogin, String creatorId, List<Role> roles){
         Optional<User> userOptional = userRepository.findById(login);
         Optional<User> creator = userRepository.findById(creatorId);
         if(userOptional.isPresent() && creator.isPresent() && (creator.get().getCompany() == null || creator.get().getCompany().equals(userOptional.get().getCompany()))){
@@ -110,6 +112,9 @@ public class CompanyService {
             }
             if(bossLogin != null && userRepository.existsById(bossLogin)){
                 user.setBoss(userRepository.getOne(bossLogin));
+            }
+            if(roles != null){
+                user.setRoles(roles);
             }
             userRepository.saveAndFlush(user);
             return user;
