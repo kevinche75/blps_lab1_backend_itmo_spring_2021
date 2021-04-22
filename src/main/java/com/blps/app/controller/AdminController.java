@@ -62,11 +62,9 @@ public class AdminController {
                                            @RequestParam(name = "passport") String passport,
                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) @RequestParam(name = "date") Date birthDate,
                                            @RequestParam(name = "boss") String bossLogin,
-                                           @RequestParam(name = "companyName") String companyName
-                                                 ){
+                                           @RequestParam(name = "companyName") String companyName,
+                                           @RequestParam(name = "roles") Set<Role> roles){
         String creatorId = SecurityContextHolder.getContext().getAuthentication().getName();
-        Set<Role> roles = new HashSet<>();
-        roles.add(Role.ROLE_USER);
         User user = companyService.createUser(login, password, name, surname, passport, birthDate, bossLogin, companyName, creatorId, roles);
         if(user != null){
             return ResponseEntity.ok(user);
@@ -83,11 +81,9 @@ public class AdminController {
                                            @RequestParam(name = "passport", required = false) String passport,
                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                            @RequestParam(name = "date", required = false) Date birthDate,
-                                           @RequestParam(name = "boss", required = false) String bossLogin
-    ){
+                                           @RequestParam(name = "boss", required = false) String bossLogin,
+                                           @RequestParam(name = "roles", required = false) Set<Role> roles){
         String creatorId = SecurityContextHolder.getContext().getAuthentication().getName();
-        Set<Role> roles = new HashSet<>();
-        roles.add(Role.ROLE_USER);
         User user = companyService.updateUser(login, password, name, surname, passport, birthDate, bossLogin, creatorId, roles);
         if(user != null){
             return ResponseEntity.ok(user);
