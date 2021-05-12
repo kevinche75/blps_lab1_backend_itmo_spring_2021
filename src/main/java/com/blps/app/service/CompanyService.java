@@ -112,7 +112,9 @@ public class CompanyService {
                 user.setBirthday(birthDate);
             }
             if(bossLogin != null && userRepository.existsById(bossLogin)){
-                user.setBoss(userRepository.getOne(bossLogin));
+                if(userRepository.findById(bossLogin).get().getRoles().contains(Role.ROLE_MANAGER)) {
+                    user.setBoss(userRepository.getOne(bossLogin));
+                } else return null;
             }
             if(roles != null){
                 user.setRoles(roles);
