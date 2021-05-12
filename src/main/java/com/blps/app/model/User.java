@@ -41,7 +41,7 @@ public class User implements Serializable{
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "blps_role")
     @Enumerated(EnumType.STRING)
-    Set<Role> roles;
+    private Set<Role> roles;
 
     @OneToMany(mappedBy = "boss")
     private List<Book> booksBoss;
