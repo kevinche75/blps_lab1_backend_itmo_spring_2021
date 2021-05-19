@@ -17,6 +17,7 @@ public class BookService {
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
     private final FlightRepository flightRepository;
+    private final LogRepository logRepository;
 
     private final AirlineApiService airlineApiService;
 
@@ -24,11 +25,13 @@ public class BookService {
                        TicketRepository ticketRepository,
                        UserRepository userRepository,
                        FlightRepository flightRepository,
+                       LogRepository logRepository,
                        AirlineApiService airlineApiService){
         this.bookRepository = bookRepository;
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.flightRepository = flightRepository;
+        this.logRepository = logRepository;
         this.airlineApiService = airlineApiService;
     }
 
@@ -56,6 +59,11 @@ public class BookService {
                 bookRepository.saveAndFlush(book);
                 ticketRepository.saveAndFlush(ticket);
                 book.getTickets().add(ticket);
+
+                Log log = new Log();
+                log.setBook(book);
+                log.setCompany(passenger.get().getCompany());
+                logRepository.saveAndFlush(log);
                 return book;
             }
         }
@@ -84,6 +92,9 @@ public class BookService {
             }
             book.setStatus(BookStatus.APPROVED);
             bookRepository.saveAndFlush(book);
+
+            Optional<Log> logOptional = logRepository.findById(bookId);
+            logOptional.ifPresent(log -> log.setApproveTime(new Date(System.currentTimeMillis())));
             return book;
         }
         return null;
