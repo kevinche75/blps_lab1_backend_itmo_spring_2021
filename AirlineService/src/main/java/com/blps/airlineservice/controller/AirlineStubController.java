@@ -1,7 +1,6 @@
-package com.blps.app.controller;
+package com.blps.airlineservice.controller;
 
-import com.blps.app.model.Book;
-import com.blps.app.model.Flight;
+import com.blps.airlineservice.model.Flight;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
