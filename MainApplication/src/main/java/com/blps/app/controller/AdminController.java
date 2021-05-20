@@ -5,6 +5,7 @@ import com.blps.app.model.Company;
 import com.blps.app.model.User;
 import com.blps.app.securty.Role;
 import com.blps.app.service.CompanyService;
+import com.blps.app.service.ReportService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,9 +19,11 @@ import java.util.*;
 public class AdminController {
 
     private final CompanyService companyService;
+    private final ReportService reportService;
 
-    public AdminController(CompanyService companyService){
+    public AdminController(CompanyService companyService, ReportService reportService){
         this.companyService = companyService;
+        this.reportService = reportService;
     }
 
     @PreAuthorize("hasRole('ADMIN_GLOBAL')")
@@ -108,6 +111,22 @@ public class AdminController {
         List<User> users = companyService.getUsers(company, creatorId);
         if(users != null){
             return ResponseEntity.ok(users);
+        }
+        return ResponseEntity.badRequest().body(null);
+    }
+
+    @PreAuthorize("hasRole('ADMIN_GLOBAL')")
+    @PostMapping("/task")
+    public ResponseEntity<Boolean> createTask(@RequestParam(name = "login") String login,
+                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                           @RequestParam(name = "startStamp", required = false) Date startStamp,
+                           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                           @RequestParam(name = "endStamp", required = false) Date endStamp,
+                           @RequestParam(name = "placeFrom", required = false) String placeFrom,
+                           @RequestParam(name = "placeTo", required = false) String placeTo
+    ){
+        if(reportService.createTask(login, startStamp, endStamp, placeFrom, placeTo)){
+            return ResponseEntity.ok(true);
         }
         return ResponseEntity.badRequest().body(null);
     }
