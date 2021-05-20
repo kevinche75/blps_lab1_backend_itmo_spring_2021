@@ -13,6 +13,6 @@ public class ReportService {
     }
 
     public void createStats(){
-
+        System.out.println("Quarts is working");
     }
 }
