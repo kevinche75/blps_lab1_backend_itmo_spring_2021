@@ -17,5 +17,8 @@ public class Log implements Serializable{
     private Company company;
 
     @Temporal(TemporalType.TIMESTAMP)
+    private Date createTime;
+
+    @Temporal(TemporalType.TIMESTAMP)
     private Date approveTime;
 }

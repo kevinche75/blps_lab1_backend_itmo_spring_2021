@@ -1,4 +1,4 @@
-package com.blps.app.model;
+package com.blps.airlineservice.model;
 import lombok.Data;
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,6 +15,9 @@ public class Log implements Serializable{
 
     @ManyToOne
     private Company company;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createTime;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date approveTime;

@@ -1,6 +1,6 @@
-package com.blps.app.repository;
+package com.blps.airlineservice.repository;
 
-import com.blps.app.model.Company;
+import com.blps.airlineservice.model.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 

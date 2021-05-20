@@ -63,6 +63,7 @@ public class BookService {
                 Log log = new Log();
                 log.setBook(book);
                 log.setCompany(passenger.get().getCompany());
+                log.setCreateTime(new Date(System.currentTimeMillis()));
                 logRepository.saveAndFlush(log);
                 return book;
             }

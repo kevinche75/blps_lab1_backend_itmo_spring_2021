@@ -1,6 +1,6 @@
-package com.blps.app.service;
+package com.blps.airlineservice.service;
 
-import com.blps.app.repository.LogRepository;
+import com.blps.airlineservice.repository.LogRepository;
 import org.springframework.stereotype.Service;
 
 @Service

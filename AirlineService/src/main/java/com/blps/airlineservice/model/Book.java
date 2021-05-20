@@ -1,4 +1,4 @@
-package com.blps.app.model;
+package com.blps.airlineservice.model;
 import lombok.Data;
 import javax.persistence.*;
 import java.io.Serializable;

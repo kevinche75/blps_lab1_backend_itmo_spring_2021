@@ -1,6 +1,6 @@
-package com.blps.app.repository;
+package com.blps.airlineservice.repository;
 
-import com.blps.app.model.Log;
+import com.blps.airlineservice.model.Log;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LogRepository extends JpaRepository<Log, Long> {

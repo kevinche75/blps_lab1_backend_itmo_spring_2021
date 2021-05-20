@@ -1,5 +1,5 @@
-package com.blps.app.model;
-import com.blps.app.securty.Role;
+package com.blps.airlineservice.model;
+import com.blps.airlineservice.security.Role;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 

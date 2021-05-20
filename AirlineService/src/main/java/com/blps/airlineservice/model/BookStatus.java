@@ -1,4 +1,4 @@
-package com.blps.app.model;
+package com.blps.airlineservice.model;
 
 public enum BookStatus {
     BOOKED, APPROVED, CANCELED,

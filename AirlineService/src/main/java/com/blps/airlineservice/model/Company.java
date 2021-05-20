@@ -1,4 +1,4 @@
-package com.blps.app.model;
+package com.blps.airlineservice.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import javax.persistence.*;

@@ -7,22 +7,22 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "BLPS_FLIGHT")
-public class Flight {
+@Table(name = "BLPS_TASK")
+public class Task {
+
     @Id
     private long id;
 
-    private String airline;
+    @ManyToOne
+    private User creator;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date startStamp;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endStamp;
 
     private String placeFrom;
 
     private String placeTo;
-
-    private Double cost;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date DepartureTime;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date ArrivalTime;
 }
