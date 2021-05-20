@@ -15,6 +15,7 @@ public class ReportService {
     }
 
     public boolean createTask(String userId, Date startDate, Date endDate, String from, String to){
+        template.send("aviasales.tasks.add", Long.toString(System.currentTimeMillis()), "Task request");
         return true;
     }
 }

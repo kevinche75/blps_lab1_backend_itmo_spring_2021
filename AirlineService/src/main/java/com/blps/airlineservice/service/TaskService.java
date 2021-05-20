@@ -4,12 +4,15 @@ import com.blps.airlineservice.model.Task;
 import com.blps.airlineservice.model.User;
 import com.blps.airlineservice.repository.TaskRepository;
 import com.blps.airlineservice.repository.UserRepository;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@EnableKafka
 @Service
 public class TaskService {
 
@@ -19,6 +22,11 @@ public class TaskService {
     public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
+    }
+
+    @KafkaListener(topics="aviasales.tasks.add")
+    public void msgListener(String msg){
+        System.out.println(msg);
     }
 
     public void createTask(String login, Date startStamp, Date endStamp, String placeFrom, String placeTo){

@@ -116,7 +116,7 @@ public class AdminController {
     }
 
     @PreAuthorize("hasRole('ADMIN_GLOBAL')")
-    @PostMapping("/task")
+    @PostMapping("/report")
     public ResponseEntity<Boolean> createTask(@RequestParam(name = "login") String login,
                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                            @RequestParam(name = "startStamp", required = false) Date startStamp,
