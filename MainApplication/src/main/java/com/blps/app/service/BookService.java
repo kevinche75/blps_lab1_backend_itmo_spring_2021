@@ -61,7 +61,7 @@ public class BookService {
                 book.getTickets().add(ticket);
 
                 Log log = new Log();
-                log.setBook(book);
+                log.setBookId(book.getId());
                 log.setCompany(passenger.get().getCompany());
                 log.setCreateTime(new Date(System.currentTimeMillis()));
                 logRepository.saveAndFlush(log);

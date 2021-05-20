@@ -10,8 +10,7 @@ import java.util.Date;
 public class Log implements Serializable{
 
     @Id
-    @OneToOne
-    private Book book;
+    private Long bookId;
 
     @ManyToOne
     private Company company;
