@@ -3,12 +3,18 @@ package com.blps.app.service;
 import com.blps.app.model.Task;
 import com.blps.app.model.User;
 import com.blps.app.repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Optional;
 
+@EnableKafka
 @Service
 public class ReportService {
 
@@ -33,5 +39,10 @@ public class ReportService {
         task.setEndStamp(endDate);
         template.send("aviasales.tasks.add", 0L, task);
         return true;
+    }
+
+    @KafkaListener(topics="aviasales.tasks.response")
+    public void msgListener(String message){
+        System.out.println(message);
     }
 }

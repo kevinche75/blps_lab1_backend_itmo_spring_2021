@@ -4,6 +4,7 @@ import com.blps.airlineservice.model.*;
 import com.blps.airlineservice.repository.BookRepository;
 import com.blps.airlineservice.repository.LogRepository;
 import com.blps.airlineservice.repository.TaskRepository;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -13,12 +14,19 @@ import java.util.Optional;
 @Service
 public class ReportService {
 
-    private LogRepository logRepository;
-    private TaskRepository taskRepository;
-    private BookRepository bookRepository;
+    private final LogRepository logRepository;
+    private final TaskRepository taskRepository;
+    private final BookRepository bookRepository;
+    private final KafkaTemplate<String, String> responceTemplate;
 
-    public ReportService(LogRepository logRepository) {
+    public ReportService(LogRepository logRepository,
+                         TaskRepository taskRepository,
+                         BookRepository bookRepository,
+                         KafkaTemplate<String, String> responceTemplate) {
         this.logRepository = logRepository;
+        this.taskRepository = taskRepository;
+        this.bookRepository = bookRepository;
+        this.responceTemplate = responceTemplate;
     }
 
     private List<Log> getLogsFiltered(Task task, Company company){
@@ -90,10 +98,14 @@ public class ReportService {
         }
 
         createDock(reportRows);
+        responceTemplate.send("aviasales.tasks.response", task.getId() +" completed");
+        taskRepository.delete(task);
     }
 
     public void createDock(List<ReportRow> reportRows){
-
+        for(ReportRow row : reportRows){
+            System.out.println(row);
+        }
     }
 
     public void createStats(){
@@ -101,6 +113,5 @@ public class ReportService {
         for(Task task : tasks){
             completeTask(task);
         }
-        System.out.println("Quarts is working");
     }
 }
