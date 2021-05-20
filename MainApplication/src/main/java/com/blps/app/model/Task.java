@@ -1,4 +1,4 @@
-package com.blps.airlineservice.model;
+package com.blps.app.model;
 
 import lombok.Data;
 
@@ -11,7 +11,6 @@ import java.util.Date;
 public class Task {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
     @ManyToOne
