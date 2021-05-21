@@ -3,10 +3,17 @@ package com.blps.airlineservice.service;
 import com.blps.airlineservice.model.*;
 import com.blps.airlineservice.repository.BookRepository;
 import com.blps.airlineservice.repository.LogRepository;
+import com.blps.airlineservice.repository.ReportRepository;
 import com.blps.airlineservice.repository.TaskRepository;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.FileOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -17,16 +24,19 @@ public class ReportService {
     private final LogRepository logRepository;
     private final TaskRepository taskRepository;
     private final BookRepository bookRepository;
+    private final ReportRepository reportRepository;
     private final KafkaTemplate<String, String> responceTemplate;
 
     public ReportService(LogRepository logRepository,
                          TaskRepository taskRepository,
                          BookRepository bookRepository,
-                         KafkaTemplate<String, String> responceTemplate) {
+                         KafkaTemplate<String, String> responceTemplate,
+                         ReportRepository reportRepository) {
         this.logRepository = logRepository;
         this.taskRepository = taskRepository;
         this.bookRepository = bookRepository;
         this.responceTemplate = responceTemplate;
+        this.reportRepository = reportRepository;
     }
 
     private List<Log> getLogsFiltered(Task task, Company company){
@@ -97,14 +107,32 @@ public class ReportService {
             }
         }
 
-        createDock(reportRows);
+        createDock(reportRows, task.getId());
         responceTemplate.send("aviasales.tasks.response", task.getId() +" completed");
         taskRepository.delete(task);
     }
 
-    public void createDock(List<ReportRow> reportRows){
-        for(ReportRow row : reportRows){
-            System.out.println(row);
+    public void createDock(List<ReportRow> reportRows, long id){
+        try {
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(id+".pdf"));
+            document.open();
+            Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
+            document.add(new Chunk("Report", font));
+            for(ReportRow row : reportRows){
+                document.add(new Paragraph("\n"));
+                document.add(new Chunk(row.toString(), font));
+            }
+            document.close();
+            Path path = Paths.get(id+".pdf");
+            Report report = new Report();
+            report.setId(id);
+            report.setContent(Files.readAllBytes(path));
+            reportRepository.saveAndFlush(report);
+            Files.delete(path);
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
     }
 

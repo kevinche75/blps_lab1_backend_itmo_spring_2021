@@ -20,7 +20,7 @@ public class Book implements Serializable{
     @Enumerated(EnumType.ORDINAL)
     private BookStatus status;
 
-    @OneToMany(mappedBy = "book")
+    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER)
     private List<Ticket> tickets;
 
     @ManyToOne

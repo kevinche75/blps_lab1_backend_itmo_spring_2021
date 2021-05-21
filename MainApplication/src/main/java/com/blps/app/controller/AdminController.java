@@ -6,7 +6,10 @@ import com.blps.app.model.User;
 import com.blps.app.securty.Role;
 import com.blps.app.service.CompanyService;
 import com.blps.app.service.ReportService;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -115,7 +118,7 @@ public class AdminController {
         return ResponseEntity.badRequest().body(null);
     }
 
-    @PreAuthorize("hasRole('ADMIN_GLOBAL')")
+    @PreAuthorize("hasAnyRole('ADMIN_GLOBAL', 'ADMIN_COMPANY')")
     @PostMapping("/report")
     public ResponseEntity<Boolean> createTask(@RequestParam(name = "login") String login,
                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -129,5 +132,10 @@ public class AdminController {
             return ResponseEntity.ok(true);
         }
         return ResponseEntity.badRequest().body(null);
+    }
+
+    @GetMapping(value = "/report/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public Resource downloadReport(@PathVariable("id") long id){
+        return new ByteArrayResource(reportService.getReport(id));
     }
 }
