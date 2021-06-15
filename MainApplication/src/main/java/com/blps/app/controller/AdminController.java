@@ -6,6 +6,8 @@ import com.blps.app.model.User;
 import com.blps.app.securty.Role;
 import com.blps.app.service.CompanyService;
 import com.blps.app.service.ReportService;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.utils.KieHelper;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -134,8 +136,15 @@ public class AdminController {
         return ResponseEntity.badRequest().body(null);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN_GLOBAL', 'ADMIN_COMPANY')")
     @GetMapping(value = "/report/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
     public Resource downloadReport(@PathVariable("id") long id){
         return new ByteArrayResource(reportService.getReport(id));
+    }
+
+    @GetMapping(value = "/bpm")
+    public void testBPM(){
+        new KieHelper().addResource(ResourceFactory.newClassPathResource("sample.bpmn"))
+                .build().newKieSession().startProcess("com.sample.bpmn.hello");
     }
 }
